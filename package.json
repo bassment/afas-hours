@@ -1,0 +1,13 @@
+{
+  "name": "fill_hours",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "selenium": "java -jar selenium/selenium-server-standalone-3.9.1.jar",
+    "fill-hours": "nightwatch"
+  },
+  "dependencies": {
+    "nightwatch": "1.0.6"
+  }
+}
