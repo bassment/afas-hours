@@ -3,8 +3,9 @@ module.exports = {
   password: '',
   userType: 'developer',
   project: 'login',
-  month: '6',
-  days: '17-19',
+  month: '7',
+  days: '5-8',
+  skipDays: [6],
   time: {
     from: '10:00',
     to: '18:00'

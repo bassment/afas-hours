@@ -56,6 +56,19 @@ const fillInOneDay = (client, { currentDay, windowCounter }) => {
     .setValue(dateInput, year)
 }
 
+const isWeekend = (day, month, year) => {
+  const myDate = new Date();
+  myDate.setDate(day);
+  myDate.setMonth(parseInt(month) - 1);
+  myDate.setFullYear(year);
+
+  return myDate.getDay() == 6 || myDate.getDay() == 0;
+}
+
+const fillRange = (start, end) => {
+  return Array(end - start + 1).fill().map((item, index) => start + index);
+};
+
 module.exports = {
   'Login to AFAS' : function (client) {
     client
@@ -82,13 +95,29 @@ module.exports = {
       .pause(waitTime)
   },
   'Start filling in hours' : function (client) {
+    const year = (new Date()).getFullYear();
     const daysArray = config.days.split('-');
+    const startDay = parseInt(daysArray[0]);
+    const lastDay = parseInt(daysArray[1]);
+
+    const allNumbers = fillRange(startDay, lastDay);
+    const shouldSkip = (i) => (isWeekend(i, config.month, year) || (config.skipDays && config.skipDays.indexOf(i) !== -1));
+
+    const lastValidDay = allNumbers
+      .filter(i => !shouldSkip(i))
+      .pop();
+
+    console.log('!!!', allNumbers);
+    console.log('111', allNumbers.filter(i => !shouldSkip(i)));
+
     let counter = 2;
-    for (let i = daysArray[0]; i <= daysArray[1]; i++) {
+
+    for (let i = startDay; i <= lastDay; i++) {
+      if (shouldSkip(i)) continue;
       fillInOneDay(client, { currentDay: i, windowCounter: counter });
       counter++;
 
-      if (i !== parseInt(daysArray[1])) {
+      if (i !== lastValidDay) {
         client
           .waitForElementVisible(newRecordButton, waitTime)
           .click(newRecordButton)
