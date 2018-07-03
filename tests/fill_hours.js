@@ -1,6 +1,6 @@
 const config = require('../config.js');
 
-const waitTime = 5000;
+const waitTime = 3500;
 
 const usernameInput = 'input[type=text]';
 const passwordInput = 'input[type=password]';
