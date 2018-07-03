@@ -23,7 +23,7 @@
 The Process will fire up the Chrome instance and will run automated test to fill in your hours specified in config. 
 You could watch how it gets populated. 
 1) **BUT I RECOMEND TO AVOID TOUCHING THE WINDOW WITH YOUR MOUSE! :D**
-2) **DON'T RUN 2 PROCESSES IN THE SAME TIME!
+2) **DON'T RUN 2 PROCESSES IN THE SAME TIME!**
 
 ## Features:
 - Don't worry about adding weekends to the *skipDays* The script will calculate and skip the weekends itself.
