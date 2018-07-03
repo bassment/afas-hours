@@ -1,6 +1,6 @@
 const config = require('../config.js');
 
-const waitTime = 4000;
+const waitTime = 5000;
 
 const usernameInput = 'input[type=text]';
 const passwordInput = 'input[type=password]';
@@ -27,7 +27,7 @@ const projectRow = (windowCounter) => `#Window_${windowCounter}_View_row_0`;
 
 const float = '.float';
 
-const fillInOneDay = (client, { currentDay, windowCounter }) => {
+const fillInOneDay = (client, { currentDay, project, windowCounter }) => {
   const day = parseInt(currentDay) < 10 ? `0${currentDay}` : currentDay;
   const month = parseInt(config.month) < 10 ? `0${config.month}` : config.month;
   const year = (new Date()).getFullYear();
@@ -39,7 +39,7 @@ const fillInOneDay = (client, { currentDay, windowCounter }) => {
     .click(searchProjectButton)
     .pause(waitTime)
     .waitForElementVisible(searchProjectInput(windowCounter), waitTime)
-    .setValue(searchProjectInput(windowCounter), [config.project, client.Keys.ENTER])
+    .setValue(searchProjectInput(windowCounter), [project, client.Keys.ENTER])
     .pause(waitTime)
     .waitForElementVisible(projectRow(windowCounter), waitTime)
     .click(projectRow(windowCounter))
@@ -101,21 +101,29 @@ module.exports = {
     const lastDay = parseInt(daysArray[1]);
 
     const allNumbers = fillRange(startDay, lastDay);
-    const shouldSkip = (i) => (isWeekend(i, config.month, year) || (config.skipDays && config.skipDays.indexOf(i) !== -1));
+    const shouldSkip = (i) => 
+      (isWeekend(i, config.month, year) || (config.skipDays && config.skipDays.indexOf(i) !== -1));
 
-    const lastValidDay = allNumbers
-      .filter(i => !shouldSkip(i))
-      .pop();
+    const validDays = allNumbers.filter(i => !shouldSkip(i));
+    const lastValidDay = validDays.pop();
+    const skipDaysCounter = (config.skipDays && config.skipDays.length) || 0;
+    const overigDays = Math.floor((validDays.length + skipDaysCounter) / 5);
 
-    console.log('!!!', allNumbers);
-    console.log('111', allNumbers.filter(i => !shouldSkip(i)));
-
-    let counter = 2;
+    let windowCounter = 2;
+    let overigCounter = 0;
 
     for (let i = startDay; i <= lastDay; i++) {
       if (shouldSkip(i)) continue;
-      fillInOneDay(client, { currentDay: i, windowCounter: counter });
-      counter++;
+
+      let project = config.project;
+
+      if (config.overig && overigDays > 0 && overigCounter < overigDays) {
+        project = 'overig';
+        overigCounter++;
+      }
+
+      fillInOneDay(client, { currentDay: i, project, windowCounter });
+      windowCounter++;
 
       if (i !== lastValidDay) {
         client
