@@ -105,7 +105,7 @@ module.exports = {
       (isWeekend(i, config.month, year) || (config.skipDays && config.skipDays.indexOf(i) !== -1));
 
     const validDays = allNumbers.filter(i => !shouldSkip(i));
-    const lastValidDay = validDays.pop();
+    const lastValidDay = validDays.length && validDays[validDays.length - 1] || startDay;
     const skipDaysCounter = (config.skipDays && config.skipDays.length) || 0;
     const overigDays = Math.floor((validDays.length + skipDaysCounter) / 5);
 
